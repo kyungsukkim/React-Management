@@ -20,25 +20,26 @@ const sytles = theme => ({
   }
 })
 
-const customer = [ 
-  {
-  'id': 1,
-  'image': 'https://placeimg.com/64/64/1',
-  'name': '김경석',
-  'birthday': '961222',
-  'gender': '남자',
-  'job': '대학생'
-  },
-  {
-    'id': 2,
-    'image': 'https://placeimg.com/64/64/2',
-    'name': '홍길동',
-    'birthday': '961222',
-    'gender': '여자',
-    'job': '프로그래머'
-    }
-]
 class App extends Component {
+
+  state = {
+    customer: ""
+  }
+
+  //API에서 데이터 받아올때 쓰는 친구
+  componentDidMount() {
+    this.callApi()
+      .then(res => this.setState({customers: res}))
+      .catch(err => console.log(err));
+
+  }
+
+  callApi = async () => {
+    const response = await fetch('/api/customers');
+    const body = await response.json();
+    return body;
+  }
+
   render(){
     const {classes}= this.props;
     return (
@@ -56,7 +57,7 @@ class App extends Component {
           </TableHead>
           <TableBody>
           {
-          customer.map(c => {
+          this.state.customers ? this.state.customers.map(c => {
             return (
               <Customer 
                 key ={c.id}
@@ -69,7 +70,7 @@ class App extends Component {
               />
             )
           })
-          }
+          : ""} 
           </TableBody>
         </Table>
       </Paper>

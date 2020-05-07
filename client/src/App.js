@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import Customer from './components/Customer'
+import Customer from './components/Customer';
+import CustomerAdd from './components/CustomerAdd';
 import './App.css';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -8,7 +9,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import { withStyles } from '@material-ui/core/styles';
-import CircularProgress from '@material-ui/core/CircularProgress'
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const sytles = theme => ({
   root: {
@@ -45,10 +46,24 @@ const sytles = theme => ({
 
 class App extends Component {
 
-  state = {
-    customer: "",
-    completed: 0
+  constructor(props) {
+    super(props);
+    this.state = {
+      customers: '',
+      completed: 0
+    }
   }
+
+  stateRefresh = () => {
+    this.setState({
+      customers:'',
+      completed: 0
+    });
+    this.callApi()
+    .then(res => this.setState({customers: res}))
+    .catch(err => console.log(err));
+  }
+
 
   //API에서 데이터 받아올때 쓰는 친구
   //API를 불러와서 특정한 뷰를 출력하고자 한다면 비동기적으로 이친구를 호출
@@ -74,6 +89,7 @@ class App extends Component {
   render(){
     const {classes}= this.props;
     return (
+      <div>
       <Paper className = {classes.root}>
         <Table className = {classes.table}>
           <TableHead>
@@ -111,6 +127,8 @@ class App extends Component {
           </TableBody>
         </Table>
       </Paper>
+      <CustomerAdd stateRefresh={this.stateRefresh}/>
+      </div>
     );
   }
   
